@@ -7,7 +7,7 @@ import circleway from "../assets/CircleWavyCheck.png";
 import shiled from "../assets/ShieldCheckered.png";
 import axios from "axios";
 
-// ✅ Yup Validation Schema
+
 const RegisterSchema = Yup.object().shape({
   fullName: Yup.string().required("Full name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -147,7 +147,7 @@ const Register: React.FC = () => {
                   {Loading ? "Registering..." : "Register"}
                 </button>
 
-                {/* Social Logins */}
+              
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-300"></div>
@@ -185,7 +185,7 @@ const Register: React.FC = () => {
                     </svg>
                   </button>
 
-                  {/* Apple */}
+            
                   <button
                     type="button"
                     className="flex-1 py-2 px-4 border border-gray-300 rounded-md flex justify-center items-center space-x-2"

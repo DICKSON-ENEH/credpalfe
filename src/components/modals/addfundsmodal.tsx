@@ -6,9 +6,11 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface AddFundsModalProps {
   onClose: () => void;
+  onclick: () => void;
+  // onCli
 }
 
-const AddFundsModal = ({ onClose }: AddFundsModalProps) => {
+const AddFundsModal = ({ onClose, onclick }: AddFundsModalProps) => {
   const [selectedOption, setSelectedOption] = useState("");
 
   const paymentOptions = [
@@ -85,6 +87,7 @@ const AddFundsModal = ({ onClose }: AddFundsModalProps) => {
 
           <div className="mt-8">
             <button
+            onClick={onclick}
               type="button"
               className="w-full bg-[#F9D900] hover:bg-yellow-600 text-black font-medium py-3 px-4 rounded-md focus:outline-none transition-colors"
               disabled={!selectedOption}

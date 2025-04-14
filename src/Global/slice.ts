@@ -3,8 +3,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface UserState {
   user: {
     id: number;
-    fullName: string;
+    fullname: string;
     wallet: {
+      id:number
       balance: number;
       accountNumber: string;
     };
@@ -26,8 +27,8 @@ const userSlice = createSlice({
       action: PayloadAction<
         {
           id: number;
-          fullName: string;
-          wallet: { balance: number; accountNumber: string };
+          fullname: string;
+          wallet: { balance: number;id:number; accountNumber: string };
         }[]
       >
     ) => {

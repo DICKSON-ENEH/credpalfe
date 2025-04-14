@@ -42,7 +42,6 @@ const InputField: React.FC<
           }`}
         />
 
-        {/* Show/Hide Password Toggle */}
         {isPassword && (
           <button
             type="button"

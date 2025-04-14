@@ -1,60 +1,71 @@
 import { Clock, Copy, WalletIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Table from "../components/table";
 import { BsBank2 } from "react-icons/bs";
 import AddFundsModal from "../components/modals/addfundsmodal";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+// import axios from "axios";
+import {  useDispatch, useSelector } from "react-redux";
 import { RootState } from "../Global/store";
+import BankTransfer from "../components/modals/BankTransfer";
+import WithdrawalModal from "../components/modals/WithdrawalModal";
 import { jwtDecode } from "jwt-decode";
+import useFetchById from "../hooks/useApiData";
 import { setUser } from "../Global/slice";
+// import { setUser } from "../Global/slice";
 
+import copy from 'copy-to-clipboard';
+import toast from "react-hot-toast";
+interface Wallet {
+  id: string;
+  balance: number;
+  accountNumber: string;
+}
+
+interface UserData {
+  id: string;
+  fullname: string;
+  password: string;
+  email: string;
+  createdAt: string;
+  wallet: Wallet;
+}
 interface DecodedToken {
   id: string;
   sub: number;
 }
-
 const Wallet = () => {
   const [activeTab, setActiveTab] = useState("history");
   const [showAddFundsModal, setShowAddFundsModal] = useState(false);
-
+  const [showBank, setShowBank] = useState(false);
+  const [showWithdrawal, setShowWithdrawal] = useState(false);
   const token = useSelector((state: RootState) => state.user.token);
+const dispatch= useDispatch()
+const decoded = jwtDecode<DecodedToken>(token)
 
-  const user = useSelector((state: RootState) => state.user.user);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!token) return;
-
-    const decoded = jwtDecode<DecodedToken>(token);
-
-    const id = decoded.sub;
-
-    console.log(id);
-
-    const url = `${import.meta.env.VITE_DEVE_URL}/users/${id}`;
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(url, { headers });
-        dispatch(setUser(res.data));
-
-        // Access the wallet details
-        const wallet = res.data.wallet;
-        const balance = wallet.balance;
-
-        console.log("Wallet Balance:", balance);
-      } catch (error) {
-        console.error("Error fetching user:", error);
+  const { data } = useFetchById<UserData>('users', decoded.sub);
+  console.log(data)
+  if(data) {
+    
+    const formattedData = {
+      ...data,
+      id: Number(data.id),
+      wallet: {
+        ...data.wallet,
+        id: Number(data.wallet.id)
       }
     };
+    dispatch(setUser([formattedData]));
+  }
+const openBank = ()=>{
+  setShowBank(true)
+  setShowAddFundsModal(false)
+}
 
-    fetchUser();
-  }, [token]);
+const copytoclipboard=()=>{
+  copy(data?.wallet?.accountNumber ?? "") 
+  toast.success(`${data?.wallet?.accountNumber ?? ""} copied to clipboard`);
+}
   return (
     <div className="bg-white h-[calc(100vh-72px)] overflow-y-scroll p-6">
       <div className="max-w-7xl mx-auto">
@@ -63,7 +74,7 @@ const Wallet = () => {
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Side - Balance Info */}
+       
           <div className="lg:col-span-1">
             <div className="bg-[#F9F9F7] rounded-lg shadow p-6 mb-6">
               <div className=" flex justify-between items-center border-[#C8CBD9] border-b-1">
@@ -76,7 +87,7 @@ const Wallet = () => {
               <div className="flex items-center mb-4">
                 <div className=" flex justify-start w-full items-center py-5 border-[#C8CBD9] border-b-1">
                   <h3 className="text-xl font-bold text-gray-900">
-                    N{user.wallet.balance}
+                    N{data?.wallet?.balance}
                     <span className=" text-sm text-[#C8CBD9]">.00</span>
                   </h3>
                 </div>
@@ -84,8 +95,8 @@ const Wallet = () => {
 
               <div className="flex items-center text-sm font-medium text-gray-600 mb-4">
                 <BsBank2 size={16} className="mr-2" />
-                <span>Wema Bank {user.wallet.accountNumber}</span>
-                <button className="ml-2 text-gray-400">
+                <span >Credpal Bank {data?.wallet?.accountNumber }  </span>
+                <button className="ml-2 text-gray-400" onClick={copytoclipboard}>
                   <Copy size={16} />
                 </button>
               </div>
@@ -107,11 +118,19 @@ const Wallet = () => {
             </div>
 
             {showAddFundsModal && (
-              <AddFundsModal onClose={() => setShowAddFundsModal(false)} />
+              <AddFundsModal onclick={openBank} onClose={() => setShowAddFundsModal(false)} />
             )}
 
+
+{showBank && (
+              <BankTransfer onClose={() => setShowBank(false)} />
+            )}
+
+{showWithdrawal && (
+              <WithdrawalModal onClose={() => setShowWithdrawal(false)} />
+            )}
             <div className="flex flex-col space-y-4">
-              {/* First Row - Add Fund/Withdrawal */}
+            
               <div className="flex justify-between items-center gap-3">
                 <button
                   onClick={() => setShowAddFundsModal(true)}
@@ -119,12 +138,16 @@ const Wallet = () => {
                 >
                   Add Fund
                 </button>
-                <button className="flex-1 bg-white hover:bg-gray-50 text-gray-800 py-3 text-sm rounded-md border border-gray-300 transition-colors">
+                <button 
+                
+                onClick={() => setShowWithdrawal(true)}
+                
+                className="flex-1 bg-white hover:bg-gray-50 text-gray-800 py-3 text-sm rounded-md border border-gray-300 transition-colors">
                   Withdrawal
                 </button>
               </div>
 
-              {/* Second Row - Action Buttons */}
+             
               <div className="grid grid-cols-3 gap-3">
                 <button className="bg-white hover:bg-gray-50 text-gray-800 py-3 text-sm rounded-md border border-gray-300 transition-colors">
                   PND Amount
@@ -139,7 +162,7 @@ const Wallet = () => {
             </div>
           </div>
 
-          {/* Right Side - Transaction History */}
+         
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow">
               <div className="border-b border-gray-200">
@@ -193,7 +216,7 @@ const Wallet = () => {
                     </button>
                   </div>
 
-                  {/* Filter Dropdown */}
+            
                   <div className="flex items-center md:ml-auto space-x-2">
                     <span className="text-sm text-gray-500">Filter by:</span>
                     <div className="relative w-full max-w-[150px]">

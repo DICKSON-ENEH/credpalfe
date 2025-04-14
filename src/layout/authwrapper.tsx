@@ -5,7 +5,7 @@ interface AuthWrapperProps {
   title?: string;
   subtitle?: string;
 }
-
+ 
 const AuthWrapper: React.FC<AuthWrapperProps> = ({ title, subtitle }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 ">

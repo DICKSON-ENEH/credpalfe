@@ -1,81 +1,41 @@
 import { ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Global/store";
+import useFetchById from "../../hooks/useApiData";
 
-// Sample transaction data
-const transactions = [
-  {
-    id: "TXN0012345",
-    type: "Validation",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012346",
-    type: "Awaiting Approval",
-    amount: "N200,000.00",
-    status: "Liquidated",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012347",
-    type: "Withdrawal",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012348",
-    type: "Collateral",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012349",
-    type: "Collateral",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012350",
-    type: "Approval",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012351",
-    type: "Collateral",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012352",
-    type: "Stock Investment",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012353",
-    type: "Collateral",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-  {
-    id: "TXN0012354",
-    type: "Collateral",
-    amount: "N200,000.00",
-    status: "Approved",
-    date: "2024-09-12",
-  },
-];
+import moment from "moment"
 
-// Table component
+
+interface Transaction {
+  id: number;
+  wallet: {
+    id: string;
+    balance: number;
+    accountNumber: string;
+  };
+  amount: number;
+  transactionType: "DEPOSIT" | "WITHDRAWAL" | "TRANSFER";
+  status: "APPROVED" | "FAILED";
+  type: "CREDIT" | "DEBIT";
+  receiverEmail: string | null;
+  timestamp: string;
+  description: string | null;
+}
+
+
+
+
+
+
 const Table = () => {
+  const user = useSelector((state: RootState) => state.user.user);
+  console.log(user[0]?.wallet.id);
+
+
+
+  const { data } = useFetchById<Transaction[]>('transactions/wallet', user[0]?.wallet.id);
+
+  console.log("this is data", data)
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="overflow-x-auto">
@@ -121,10 +81,10 @@ const Table = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {transactions.map((transaction) => (
+            {data?.map((transaction:Transaction) => (
               <tr key={transaction.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {transaction.id}
+                  TXN00{transaction.id}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {transaction.type}
@@ -135,11 +95,11 @@ const Table = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      transaction.status === "Approved"
+                      transaction.status === "APPROVED"
                         ? "bg-green-100 text-green-800"
-                        : transaction.status === "Liquidated"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
+                        : transaction.status === "FAILED"
+                        ? "bg-red-500 text-white"
+                        : "bg-red-100 text-white"
                     }`}
                   >
                     <span className="h-2 w-2 mr-1 rounded-full bg-current"></span>
@@ -147,7 +107,10 @@ const Table = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {transaction.date}
+                 { moment(
+                  transaction.timestamp
+
+                  ).format("MMM Do YY")}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button className="text-blue-600 hover:text-blue-800 flex items-center">

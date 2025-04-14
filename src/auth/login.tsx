@@ -34,8 +34,8 @@ const Login: React.FC = () => {
       const res = await axios.post(url, values);
       dispatch(setToken(res.data.access_token));
       toast.success("Login Successful");
-      nav("/wallet");
-      console.log(res);
+      nav("/");
+      console.log(res); 
     } catch (error) {
       console.log(error);
       toast.error(
