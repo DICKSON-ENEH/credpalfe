@@ -89,7 +89,7 @@ const handleSubmit = async (values: { amount: number; identifier: string , descr
                   type="string"
                   label="Account number or email"
                   name="identifier"
-                //   placeholder="••••••••"
+             
                   required
                 />
 
