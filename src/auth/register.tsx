@@ -9,7 +9,7 @@ import axios from "axios";
 
 
 const RegisterSchema = Yup.object().shape({
-  fullName: Yup.string().required("Full name is required"),
+  fullname: Yup.string().required("Full name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
     .min(6, "Password too short")
@@ -19,11 +19,11 @@ const RegisterSchema = Yup.object().shape({
 const Register: React.FC = () => {
   const [Loading, setLoading] = useState(false);
 
-  const url = `${import.meta.env.VITE_DEVE_URL}/user/register`;
+  const url = `${import.meta.env.VITE_DEVE_URL}/users/register`;
   console.log(url);
 
   const handleSubmit = async (values: {
-    fullName: string;
+    fullname: string;
     email: string;
     password: string;
   }) => {
@@ -41,7 +41,7 @@ const Register: React.FC = () => {
 
   return (
     <div className="flex min-h-screen w-full md:w-[90%]">
-      {/* Left Column */}
+  
       <div className="regbg hidden md:flex md:w-2/5 bg-black flex-col justify-end relative overflow-hidden">
         <div className="p-8 text-white relative z-10">
           <div className="w-10 h-10 mb-5 text-black bg-[#FFDE02] rounded-full flex items-center justify-center font-extrabold text-lg">
@@ -67,7 +67,7 @@ const Register: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Column */}
+     
       <div className="w-full md:w-3/5 flex items-center justify-center">
         <div className="w-full max-w-md p-8">
           <div className="mb-8">
@@ -82,10 +82,10 @@ const Register: React.FC = () => {
             </p>
           </div>
 
-          {/* ✅ Formik Form */}
+        
 
           <Formik
-            initialValues={{ fullName: "", email: "", password: "" }}
+            initialValues={{ fullname: "", email: "", password: "" }}
             validationSchema={RegisterSchema}
             onSubmit={handleSubmit}
           >
@@ -94,7 +94,7 @@ const Register: React.FC = () => {
                 <InputField
                   type="text"
                   label="Full name"
-                  name="fullName"
+                  name="fullname"
                   placeholder="Enter full name"
                   required
                 />
@@ -160,7 +160,7 @@ const Register: React.FC = () => {
                 </div>
 
                 <div className="flex space-x-4">
-                  {/* Google */}
+                
                   <button
                     type="button"
                     className="flex-1 py-2 px-4 border border-gray-300 rounded-md flex justify-center items-center space-x-2"
