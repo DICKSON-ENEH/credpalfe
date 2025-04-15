@@ -4,6 +4,7 @@ import Register from "./auth/register";
 import Login from "./auth/login";
 import Dashboardwrapper from "./layout/dashboardwrapper";
 import Wallet from "./client/wallet";
+import ErrorPage from "./components/ErrorPage";
 
 export const routes = createBrowserRouter([
   {
@@ -23,10 +24,12 @@ export const routes = createBrowserRouter([
   {
     path: "",
     element: <Dashboardwrapper />,
+
     children: [
       {
         path: "/",
         element: <Wallet />,
+        errorElement: <ErrorPage />
       },
     ],
   },
