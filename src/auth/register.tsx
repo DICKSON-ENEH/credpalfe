@@ -6,6 +6,8 @@ import vector from "../assets/Vector.png";
 import circleway from "../assets/CircleWavyCheck.png";
 import shiled from "../assets/ShieldCheckered.png";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 
 const RegisterSchema = Yup.object().shape({
@@ -18,7 +20,7 @@ const RegisterSchema = Yup.object().shape({
 
 const Register: React.FC = () => {
   const [Loading, setLoading] = useState(false);
-
+  const nav = useNavigate();
   const url = `${import.meta.env.VITE_DEVE_URL}/users/register`;
   console.log(url);
 
@@ -32,8 +34,15 @@ const Register: React.FC = () => {
     try {
       const res = await axios.post(url, values);
       console.log(res);
+
+      toast.success("Login Successful");
+      nav("/");
     } catch (error) {
       console.log(error);
+      toast.error(
+        //@ts-expect-error ignore exception to track
+        error instanceof Error ? error.response?.data?.message : "An unexpected error occurred"
+      );
     } finally {
       setLoading(false);
     }
