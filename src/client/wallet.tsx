@@ -15,6 +15,7 @@ import { setUser } from "../Global/slice";
 
 import copy from 'copy-to-clipboard';
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 interface Wallet {
   id: string;
   balance: number;
@@ -39,6 +40,8 @@ const Wallet = () => {
   const [showBank, setShowBank] = useState(false);
   const [showWithdrawal, setShowWithdrawal] = useState(false);
   const token = useSelector((state: RootState) => state.user.token);
+  const nav = useNavigate();
+
 const dispatch= useDispatch()
 const decoded = jwtDecode<DecodedToken>(token)
 
@@ -66,6 +69,15 @@ const copytoclipboard=()=>{
   copy(data?.wallet?.accountNumber ?? "") 
   toast.success(`${data?.wallet?.accountNumber ?? ""} copied to clipboard`);
 }
+
+if (!token ) {
+  console.error("Invalid token format");
+  // handle logout or redirect, or render nothing
+  nav("/");
+
+  return <div>Invalid session. Please log in again.</div>;
+}
+
   return (
     <div className="bg-white h-[calc(100vh-72px)] overflow-y-scroll p-6">
       <div className="max-w-7xl mx-auto">
