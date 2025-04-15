@@ -46,6 +46,15 @@ const handleSubmit = async (values: { amount: number; identifier: string , descr
     toast.success("Withdrawal Successful");
     
     console.log(res);
+
+
+    onClose();
+      
+  
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+
   } catch (error) {
     console.log(error);
     toast.error(
