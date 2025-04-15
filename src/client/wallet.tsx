@@ -1,5 +1,5 @@
 import { Clock, Copy, WalletIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Table from "../components/table";
 import { BsBank2 } from "react-icons/bs";
 import AddFundsModal from "../components/modals/addfundsmodal";
@@ -43,6 +43,19 @@ const Wallet = () => {
   const nav = useNavigate();
 
 const dispatch= useDispatch()
+
+const openBank = ()=>{
+  setShowBank(true)
+  setShowAddFundsModal(false)
+}
+
+
+
+useEffect(() => {
+  if (!token || typeof token !== 'string' || !token.includes('.')) {
+    nav("/");
+  }
+}, [token, nav]);
 const decoded = jwtDecode<DecodedToken>(token)
 
 
@@ -60,24 +73,10 @@ const decoded = jwtDecode<DecodedToken>(token)
     };
     dispatch(setUser([formattedData]));
   }
-const openBank = ()=>{
-  setShowBank(true)
-  setShowAddFundsModal(false)
-}
-
-const copytoclipboard=()=>{
-  copy(data?.wallet?.accountNumber ?? "") 
-  toast.success(`${data?.wallet?.accountNumber ?? ""} copied to clipboard`);
-}
-
-if (!token ) {
-  console.error("Invalid token format");
-  // handle logout or redirect, or render nothing
-  nav("/");
-
-  return <div>Invalid session. Please log in again.</div>;
-}
-
+  const copytoclipboard=()=>{
+    copy(data?.wallet?.accountNumber ?? "") 
+    toast.success(`${data?.wallet?.accountNumber ?? ""} copied to clipboard`);
+  }
   return (
     <div className="bg-white h-[calc(100vh-72px)] overflow-y-scroll p-6">
       <div className="max-w-7xl mx-auto">
